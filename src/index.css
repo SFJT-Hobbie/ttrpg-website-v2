@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@import 'quill/dist/quill.snow.css';
+
+body {
+  background-color: black;
+  color: white;
+}
+
+.landing-title {
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+}
+
+.garamond {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.cinzel {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.montserrat {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.leaflet-container {
+  z-index: 10 !important;
+  background: #1a1a1a;
+}
+
+.leaflet-container.adding-pin {
+  cursor: crosshair !important;
+}
