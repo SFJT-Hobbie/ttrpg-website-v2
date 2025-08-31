@@ -241,6 +241,8 @@ export default function LibraryLoreRoomWiki() {
     </ul>
   );
 
+  if (!room || loading) return <p className="text-white text-center mt-10">Cargando sala...</p>;
+
   return (
     <>
       <style>
@@ -340,11 +342,13 @@ export default function LibraryLoreRoomWiki() {
       <section className="min-h-screen min-w-screen flex flex-col items-center text-white overflow-clip">
         <div className="top-0 mx-auto mt-4 text-center">
           <h1 className="cinzel text-5xl md:text-7xl landing-title">
-            Wiki - Lore Room "{room.name}"
+            {room.name}
           </h1>
+          <h2 className="cinzel text-5xl md:text-7xl landing-title">
+            Wiki
+          </h2>
         </div>
         {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
-        {loading && <p className="text-yellow-500 mt-2 text-center">Cargando...</p>}
         <main className="w-10/12 h-10/12 mx-auto my-8 space-y-8 p-4 flex flex-col md:flex-row">
           {/* Sidebar for page tree */}
           <aside className="w-full md:w-1/4 pr-4">

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { supabase } from '../supabaseClient';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid v4
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Library() {
   const navigate = useNavigate();
@@ -16,6 +16,31 @@ export default function Library() {
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [error, setError] = useState(null);
+
+  // Fetch existing user profile on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data: profile, error: profileError } = await supabase
+          .from('user_profiles')
+          .select('username, color')
+          .eq('user_id', user.id)
+          .single();
+        if (profileError && profileError.code !== 'PGRST116') throw profileError; // Ignore if no row found
+        if (profile) {
+          setUsername(profile.username || '');
+          setColor(profile.color || '#ff0000');
+        }
+      } catch (err) {
+        console.error('Fetch profile error:', err);
+        setError('Error al cargar perfil existente. Usando valores predeterminados.');
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
 
   const handleChangeId = (e) => setLoreRoomId(e.target.value);
   const handleChangeName = (e) => setRoomName(e.target.value);
@@ -141,6 +166,12 @@ export default function Library() {
                   value={username}
                   onChange={handleChangeUsername}
                   placeholder="Tu nombre de usuario"
+                />
+                <input
+                  className="mx-auto w-15 h-12 mt-2"
+                  type="color"
+                  value={color}
+                  onChange={handleChangeColor}
                 />
                 <button
                   type="submit"

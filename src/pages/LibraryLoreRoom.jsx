@@ -9,7 +9,7 @@ export default function LibraryLoreRoom() {
   const { user } = useAuth();
 
   const [room, setRoom] = useState(null);
-  const [userData, setUserData] = useState({ username: '', color: '#000000', role: 'member' });
+  const [userData, setUserData] = useState({ username: '', color: '#FF0000', role: 'member' });
   const [members, setMembers] = useState([]);
   const [error, setError] = useState(null);
 
@@ -39,7 +39,7 @@ export default function LibraryLoreRoom() {
         const membersList = roomData.members.map((memberId) => {
           const profile = profiles.find((p) => p.user_id === memberId) || {
             username: 'Sin nombre',
-            color: '#000000',
+            color: '#FF0000',
           };
           return {
             user_id: memberId,
@@ -53,7 +53,7 @@ export default function LibraryLoreRoom() {
         // Set current user's data
         const currentUserProfile = profiles.find((p) => p.user_id === user.id) || {
           username: '',
-          color: '#000000',
+          color: '#FF0000',
         };
         setUserData({
           username: currentUserProfile.username,
@@ -63,6 +63,11 @@ export default function LibraryLoreRoom() {
       } catch (err) {
         console.error('Fetch room error:', err);
         setError('Error al cargar la sala.');
+        // Fallback to red if fetch fails
+        setUserData((prev) => ({ ...prev, color: '#FF0000' }));
+        setMembers((prev) =>
+          prev.map((m) => ({ ...m, color: '#FF0000' }))
+        );
       }
     };
 
@@ -128,8 +133,11 @@ export default function LibraryLoreRoom() {
   return (
     <section className="min-h-screen min-w-screen flex flex-col items-center text-white overflow-x-clip overflow-y-auto">
       <h1 className="cinzel text-5xl md:text-7xl mt-4 text-center">
-        Lore Room - "{room.name}"
+        {room.name}
       </h1>
+      <h2 className="cinzel text-5xl md:text-7xl mt-4 text-center">
+        Table
+      </h2>
 
       <main className="w-10/12 mx-auto rounded-2xl my-8 space-y-8 border border-white p-4">
         {/* User profile */}
