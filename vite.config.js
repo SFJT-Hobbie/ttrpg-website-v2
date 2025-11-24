@@ -41,6 +41,10 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,wasm,json}'],
+          // Exclude large image files from precaching (they'll be cached on-demand)
+          globIgnores: ['**/assets/image/custom-map.png', '**/assets/image/*.jpg'],
+          // Increase file size limit to 5MB to handle larger assets
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -80,6 +84,20 @@ export default defineConfig(({ mode }) => {
                   maxAgeSeconds: 60 * 5 // 5 minutes
                 },
                 networkTimeoutSeconds: 10
+              }
+            },
+            {
+              urlPattern: /\/assets\/image\/.*\.(png|jpg|jpeg)$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'large-images-cache',
+                expiration: {
+                  maxEntries: 20,
+                  maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
               }
             }
           ]
