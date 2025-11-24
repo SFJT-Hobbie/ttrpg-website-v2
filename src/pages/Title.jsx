@@ -99,7 +99,7 @@ export default function Title() {
       )}
       <div className="w-full max-w-[1200px] px-4 sm:px-6 md:px-8 lg:px-12">
         <div onClick={handleClick} className="flex flex-col space-y-6 md:space-y-8 text-center cursor-pointer">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl cinzel relative z-10 landing-title">Aristilia v2</h1>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl cinzel relative z-10 landing-title">Aristilia</h1>
         </div>
       </div>
 
