@@ -12,6 +12,21 @@ export const DiceBoxProvider = ({ children }) => {
   const containerRef = useRef(null);
   const resizeHandlerRef = useRef(null);
 
+  // Calculate responsive dice scale based on viewport width
+  const getDiceScale = useCallback(() => {
+    const width = window.innerWidth;
+    if (width < 640) {
+      // Mobile: smaller scale
+      return 3;
+    } else if (width < 1024) {
+      // Tablet: medium scale
+      return 4;
+    } else {
+      // Desktop: full scale
+      return 5;
+    }
+  }, []);
+
   // Initialize DiceBox
   useEffect(() => {
     if (disableThreeJS) return;
@@ -45,6 +60,9 @@ export const DiceBoxProvider = ({ children }) => {
         const DiceBoxModule = await import('@3d-dice/dice-box');
         const DiceBox = DiceBoxModule.default || DiceBoxModule;
         
+        // Calculate initial scale based on viewport
+        const initialScale = getDiceScale();
+        
         // Create DiceBox instance - use 'container' option per documentation
         const diceBox = new DiceBox({
           container: '#dice-container',
@@ -52,7 +70,7 @@ export const DiceBoxProvider = ({ children }) => {
           theme: 'default',
           themeColor: diceColor,
           offscreen: false,
-          scale: 5,
+          scale: initialScale,
         });
 
         // Initialize
@@ -75,17 +93,33 @@ export const DiceBoxProvider = ({ children }) => {
           canvas.style.height = '100%';
           canvas.style.display = 'block';
           
-          // Set canvas dimensions to match container
+          // Set canvas dimensions to match container and update scale
           const updateCanvasSize = () => {
-            canvas.width = containerElement.offsetWidth;
-            canvas.height = containerElement.offsetHeight;
+            // Use window.innerWidth/innerHeight for better mobile viewport handling
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Update dice scale based on new viewport size
+            const newScale = getDiceScale();
+            if (diceBoxRef.current && diceBoxRef.current.updateConfig) {
+              diceBoxRef.current.updateConfig({ scale: newScale });
+            }
           };
           
           updateCanvasSize();
           
-          // Update on resize
-          resizeHandlerRef.current = updateCanvasSize;
+          // Update on resize with debounce for performance
+          let resizeTimeout;
+          resizeHandlerRef.current = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateCanvasSize, 150);
+          };
           window.addEventListener('resize', resizeHandlerRef.current);
+          // Also listen for orientation changes on mobile
+          window.addEventListener('orientationchange', resizeHandlerRef.current);
           
           console.log('Canvas successfully configured for full viewport');
         } else {
@@ -110,6 +144,7 @@ export const DiceBoxProvider = ({ children }) => {
       clearTimeout(timer);
       if (resizeHandlerRef.current) {
         window.removeEventListener('resize', resizeHandlerRef.current);
+        window.removeEventListener('orientationchange', resizeHandlerRef.current);
         resizeHandlerRef.current = null;
       }
       if (diceBoxRef.current) {
@@ -117,7 +152,7 @@ export const DiceBoxProvider = ({ children }) => {
         diceBoxRef.current = null;
       }
     };
-  }, [disableThreeJS, diceColor]);
+  }, [disableThreeJS, diceColor, getDiceScale]);
 
   // Update dice color when it changes
   useEffect(() => {
@@ -163,8 +198,8 @@ export const DiceBoxProvider = ({ children }) => {
             position: 'fixed',
             top: 0,
             left: 0,
-            width: '100vw',
-            height: '100vh',
+            width: '100%',
+            height: '100%',
             pointerEvents: 'none',
             opacity: disableThreeJS ? 0 : 1,
             visibility: disableThreeJS ? 'hidden' : 'visible',

@@ -84,7 +84,7 @@ export default function ElfRace() {
             </ul>
           </div>
         </main>
-        <div className="w-full sm:w-2/3 md:w-1/3 mt-4 flex justify-center">
+        <div className="w-full sm:w-2/3 md:w-1/3 mt-4 flex items-center justify-center">
           <img className="rounded-2xl opacity-25 w-full max-w-full h-auto" src="/assets/image/elf.png" alt="" />
         </div>
         <div onClick={handleClickBack} className="mt-8 mb-4 text-center cursor-pointer">

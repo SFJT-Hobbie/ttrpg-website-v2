@@ -93,7 +93,7 @@ export default function MulticlassClass() {
             </div>
           </div>
         </main>
-        <div className="w-full sm:w-1/2 md:w-1/5 mt-4 flex justify-center">
+        <div className="w-full sm:w-1/2 md:w-1/5 mt-4 flex items-center justify-center">
           <img className="rounded-2xl opacity-25 w-full max-w-full h-auto" src="/assets/image/multiclass.png" alt="" />
         </div>
         <div onClick={handleClickBack} className="mt-8 mb-4 text-center cursor-pointer">

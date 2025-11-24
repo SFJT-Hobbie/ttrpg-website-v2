@@ -42,7 +42,7 @@ const DiceFloatingButton = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 md:bottom-8 md:left-auto md:right-8 md:translate-x-0 z-50 w-14 h-14 md:w-16 md:h-16 bg-red-700 hover:bg-red-600 rounded-full shadow-lg flex items-center justify-center transition-colors"
+        className="fixed bottom-4 left-4 md:bottom-8 md:left-auto md:right-8 md:translate-x-0 z-50 w-14 h-14 md:w-16 md:h-16 bg-red-700 hover:bg-red-600 rounded-full shadow-lg flex items-center justify-center transition-colors"
         aria-label="Roll Dice"
       >
         <Icon path={mdiDiceD20} size={1.5} className="text-white" />
@@ -66,7 +66,7 @@ const DiceFloatingButton = () => {
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className="fixed bottom-20 left-1/2 -translate-x-1/2 md:bottom-auto md:left-auto md:right-8 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 z-50 bg-gray-900 border border-white rounded-lg p-6 shadow-2xl"
+              className="fixed bottom-20 left-4 md:bottom-auto md:left-auto md:right-8 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 z-50 bg-gray-900 border border-white rounded-lg p-6 shadow-2xl"
             >
               {/* Close Button */}
               <button

@@ -227,7 +227,7 @@ export default function LibraryLoreRoom() {
           </div>
         </main>
 
-        <div className="w-full sm:w-2/3 md:w-2/5 mt-4 flex justify-center items-center">
+        <div className="w-full sm:w-2/3 md:w-2/5 mt-4 mx-auto flex items-center justify-center">
           <img className="rounded-2xl opacity-25 w-full max-w-full h-auto" src="/assets/image/multiversal-eye.png" alt="" />
         </div>
 
