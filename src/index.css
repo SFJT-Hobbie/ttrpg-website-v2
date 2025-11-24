@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+@import 'quill/dist/quill.snow.css';
+@import './styles/design-system.css';
+
+body {
+  background-color: black;
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+}
+
+.landing-title {
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+}
+
+.garamond {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.cinzel {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.montserrat {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Responsive Typography Utilities */
+.text-page-title {
+  font-family: "Cinzel", serif;
+  font-size: 2.25rem; /* 36px */
+  line-height: 1.2;
+  font-weight: 300;
+}
+
+@media (min-width: 640px) {
+  .text-page-title {
+    font-size: 3rem; /* 48px */
+  }
+}
+
+@media (min-width: 768px) {
+  .text-page-title {
+    font-size: 3.75rem; /* 60px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-page-title {
+    font-size: 4.5rem; /* 72px */
+  }
+}
+
+.text-section-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  font-weight: 300;
+}
+
+@media (min-width: 640px) {
+  .text-section-title {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+
+@media (min-width: 768px) {
+  .text-section-title {
+    font-size: 1.875rem; /* 30px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-section-title {
+    font-size: 2.25rem; /* 36px */
+  }
+}
+
+.text-body {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+@media (min-width: 640px) {
+  .text-body {
+    font-size: 1rem; /* 16px */
+  }
+}
+
+@media (min-width: 768px) {
+  .text-body {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+.text-small {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+@media (min-width: 640px) {
+  .text-small {
+    font-size: 0.875rem; /* 14px */
+  }
+}
+
+/* Ensure all max-width containers are centered */
+.w-full.max-w-\[1200px\] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure main content areas are centered */
+main {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leaflet-container {
+  z-index: 10 !important;
+  background: #1a1a1a;
+}
+
+.leaflet-container.adding-pin {
+  cursor: crosshair !important;
+}
+
+/* Toast Animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Custom Tooltip Styling */
+.custom-tooltip {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0.75rem !important;
+  padding: 0.75rem !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.custom-tooltip::before {
+  border-top-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom pin icon styling */
+.custom-pin-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-pin-icon svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s ease;
+}
+
+.custom-pin-icon:hover svg {
+  transform: scale(1.1);
+}

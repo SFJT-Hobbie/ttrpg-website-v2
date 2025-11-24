@@ -1,0 +1,80 @@
+/* Design System - UI Consistency & Responsive Design */
+
+:root {
+  /* Container */
+  --container-max-width: 1200px;
+  
+  /* Spacing Scale (mobile-first) */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+  
+  /* Border Radius */
+  --radius-sm: 0.5rem;     /* 8px */
+  --radius-md: 0.75rem;    /* 12px */
+  --radius-lg: 1rem;       /* 16px */
+  --radius-xl: 1.5rem;     /* 24px */
+  
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-base: 300ms;
+  --transition-slow: 500ms;
+}
+
+/* Container Utilities */
+.page-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;   /* 16px mobile */
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding-left: 1.5rem;  /* 24px sm */
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding-left: 2rem;    /* 32px md */
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding-left: 3rem;    /* 48px lg */
+    padding-right: 3rem;
+  }
+}
+
+.content-container {
+  width: 100%;
+}
+
+.section-container {
+  border: 1px solid white;
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-container {
+    padding: 2rem;
+  }
+}
+
