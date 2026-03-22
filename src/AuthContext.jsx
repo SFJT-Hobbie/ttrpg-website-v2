@@ -53,6 +53,12 @@ export function AuthProvider({ children }) {
         options: { data: { username } },
       }),
     signOut: async () => supabase.auth.signOut(),
+    resetPassword: async (email) =>
+      supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      }),
+    updatePassword: async (newPassword) =>
+      supabase.auth.updateUser({ password: newPassword }),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

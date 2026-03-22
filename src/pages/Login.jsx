@@ -94,7 +94,14 @@ const Login = () => {
               </button>
             </div>
           </form>
-          <p className="mt-4 text-small montserrat">
+          <Link
+            to="/forgot-password"
+            className="text-gray-400 text-small hover:text-gray-200 hover:underline transition-all duration-300 montserrat mt-4 p-1"
+            aria-label="¿Olvidaste tu contraseña?"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+          <p className="mt-2 text-small montserrat">
             ¿Aún no tienes cuenta?{' '}
             <Link
               to="/register"

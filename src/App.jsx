@@ -10,6 +10,8 @@ import './App.css';
 const Title = lazy(() => import('./pages/Title.jsx'));
 const Login = lazy(() => import('./pages/Login.jsx'));
 const Register = lazy(() => import('./pages/Register.jsx'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword.jsx'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'));
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 const Tools = lazy(() => import('./pages/Tools.jsx'));
 
@@ -118,7 +120,7 @@ function AppContent() {
   const location = useLocation();
   
   // Pages where dice should NOT be shown
-  const noDicePages = ['/', '/login', '/register'];
+  const noDicePages = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
   const shouldShowDice = user && !noDicePages.includes(location.pathname);
 
   return (
@@ -148,6 +150,8 @@ function AppContent() {
                 />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
               <Route
                 path="/landing"
                 element={
