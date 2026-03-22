@@ -1,0 +1,14 @@
+SET session_replication_role = 'replica';
+
+-- public.maps (1 rows)
+INSERT INTO public.maps (id, room_id, image_url, name, start_lat, start_lng, start_zoom) VALUES ('403eaeab-b87c-406c-bd5d-30eacf18718c', 'c3497459-c4bf-4a9e-a01e-032f1a3f4df0', 'https://dhlfazgdmflcldzojbdv.supabase.co/storage/v1/object/public/room-maps/c3497459-c4bf-4a9e-a01e-032f1a3f4df0/0ba757fe-b547-45f1-aeee-ce257a5ada37.png', 'EldraKhazan', 48.99572602393856, 21.532628591453438, -0.9932870491619953);
+-- public.pins (7 rows)
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('ba490881-0c80-486b-9d5e-1bd2f5f8f721', '403eaeab-b87c-406c-bd5d-30eacf18718c', 13.909725580840467, 47.21868300242223, 'HOMMLET', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#59ff00', 'Pueblo Pesquero');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('a5cd2591-1f14-4b67-8f55-38186d9735b8', '403eaeab-b87c-406c-bd5d-30eacf18718c', 19.5637078988087, 47.56535719668335, 'Illmire', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#59ff00', 'Pueblo Maderero');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('c256f032-1662-4edd-8f15-2dac3f82df2f', '403eaeab-b87c-406c-bd5d-30eacf18718c', 22.448941052473405, 49.655957832669735, 'Roble Anciano', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#d4ff00', 'Roble Descomunal sentiente');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('48a68e97-9430-4ea1-bdf9-a30d65d0880e', '403eaeab-b87c-406c-bd5d-30eacf18718c', 21.460636391356978, 47.53502968003167, 'Elowen', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#e100ff', 'Bruja del Bosque de Illmire');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('29a80407-76e6-4b64-8059-680ff7d93ea6', '403eaeab-b87c-406c-bd5d-30eacf18718c', 17.234781978307396, 49.55496125397269, 'Terjon', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#0008ff', 'Druida del Bosque de Hommlet');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('efa2066c-d565-429c-be9e-a40c127cf854', '403eaeab-b87c-406c-bd5d-30eacf18718c', 16.0079210196801, 52.685855193581254, 'Casa Misteriosa', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#d4ff00', 'Posible Mazmorra');
+INSERT INTO public.pins (id, map_id, position_x, position_y, title, created_by, color, description) VALUES ('7b478889-b402-4e01-8f51-36dfe33bcf62', '403eaeab-b87c-406c-bd5d-30eacf18718c', 26.48154472903857, 64.5430514206424, 'Mazmorra Reptiloides', 'bafbefd7-7b5a-4e94-90e6-ec02bc93f51c', '#e1ff00', 'Posible entrada a la Mazmorra de los Reptiloides');
+
+SET session_replication_role = 'origin';

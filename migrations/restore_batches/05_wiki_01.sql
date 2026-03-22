@@ -1,0 +1,5 @@
+SET session_replication_role = 'replica';
+
+INSERT INTO public.wiki_pages (id, room_id, title, content, parent_id, created_at, updated_at) VALUES ('5edafa78-1720-4f25-bb29-bccd98025602', 'c3497459-c4bf-4a9e-a01e-032f1a3f4df0', 'Cosmogonía de Aristilia', '<h2><strong><u>Definición</u></strong></h2><p>La cosmogonía es un relato, teoría o modelo que explica el origen y la evolución del universo, la humanidad y el mundo, pudiendo ser de origen mítico (religioso), filosófico o científico</p><p><br></p><h2><strong><u>Cosmogonía de Aristilia</u></strong></h2><ul><li><strong>Cosmogonía Mítica</strong>: Es un conjunto de narraciones tradicionales que explican el origen del mundo a través de mitos, a menudo involucrando la intervención de deidades o fuerzas sobrenaturales.</li></ul><p><br></p><ul><li><strong>Cosmogonía Filosófica</strong>: Se basa en el pensamiento filosófico para intentar comprender la creación del universo, como algunas de las primeras ideas sobre el cosmos que proponían que este era un ser vivo que respiraba</li></ul>', NULL, '2025-08-31 14:52:14.142155', '2025-08-31 14:58:26.83');
+
+SET session_replication_role = 'origin';
