@@ -8,31 +8,43 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isRecovery, setIsRecovery] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
-    // 1. Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      setIsAdmin(currentUser?.app_metadata?.is_admin || false);
-      if (session) supabase.realtime.setAuth(session.access_token);
-      setLoading(false);
-    });
+    // Check if the URL has a recovery code that needs to be exchanged
+    const params = new URLSearchParams(window.location.search);
+    const hasRecoveryCode = params.has('code') && window.location.pathname === '/reset-password';
 
-    // 2. Subscribe to auth changes
+    // 1. Subscribe to auth changes first so we catch the recovery event
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         setIsAdmin(currentUser?.app_metadata?.is_admin || false);
         if (session) supabase.realtime.setAuth(session.access_token);
         else supabase.realtime.setAuth(null);
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsRecovery(true);
+        }
         setLoading(false);
       }
     );
+
+    // 2. Check initial session — but if there's a recovery code pending,
+    //    let onAuthStateChange handle it instead to avoid a race condition
+    if (!hasRecoveryCode) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!mounted) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        setIsAdmin(currentUser?.app_metadata?.is_admin || false);
+        if (session) supabase.realtime.setAuth(session.access_token);
+        setLoading(false);
+      });
+    }
 
     return () => {
       mounted = false;
@@ -44,6 +56,7 @@ export function AuthProvider({ children }) {
     user,
     isAdmin,
     loading,
+    isRecovery,
     signIn: async ({ email, password }) =>
       supabase.auth.signInWithPassword({ email, password }),
     signUp: async ({ username, email, password }) =>

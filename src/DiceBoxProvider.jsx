@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { DiceBoxContext } from './DiceBoxContext';
+import { DICE_RESULT_DISPLAY_MS } from './constants/dice.js';
 
 export const DiceBoxProvider = ({ children }) => {
   const [diceColor, setDiceColor] = useState(
@@ -11,6 +12,15 @@ export const DiceBoxProvider = ({ children }) => {
   const diceBoxRef = useRef(null);
   const containerRef = useRef(null);
   const resizeHandlerRef = useRef(null);
+  const resizeObserverRef = useRef(null);
+  const diceClearTimerRef = useRef(null);
+
+  const cancelScheduledDiceClear = useCallback(() => {
+    if (diceClearTimerRef.current != null) {
+      clearTimeout(diceClearTimerRef.current);
+      diceClearTimerRef.current = null;
+    }
+  }, []);
 
   // Calculate responsive dice scale based on viewport width
   const getDiceScale = useCallback(() => {
@@ -77,60 +87,48 @@ export const DiceBoxProvider = ({ children }) => {
         await diceBox.init();
         diceBoxRef.current = diceBox;
 
-        // Ensure canvas fills the entire viewport
-        const canvas = diceBox.canvas;
-        if (canvas) {
-          // Ensure canvas is in the container
-          if (!containerElement.contains(canvas)) {
-            containerElement.appendChild(canvas);
-          }
-          
-          // Style canvas to fill entire viewport
-          canvas.style.position = 'absolute';
-          canvas.style.top = '0';
-          canvas.style.left = '0';
-          canvas.style.width = '100%';
-          canvas.style.height = '100%';
-          canvas.style.display = 'block';
-          
-          // Set canvas dimensions to match container and update scale
-          const updateCanvasSize = () => {
-            // Use window.innerWidth/innerHeight for better mobile viewport handling
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Update dice scale based on new viewport size
+        // dice-box sets physics boundaries from canvas.clientWidth/clientHeight
+        // on window 'resize'. Fire a cascade of resize events to catch layout
+        // races where the canvas hasn't reached full size yet.
+        const fireResize = () => window.dispatchEvent(new Event('resize'));
+        requestAnimationFrame(() => {
+          fireResize();
+          requestAnimationFrame(() => {
+            requestAnimationFrame(fireResize);
+          });
+        });
+        setTimeout(fireResize, 200);
+
+        // ResizeObserver catches container size changes that window resize misses
+        // (mobile keyboard, toolbar collapse, safe-area changes)
+        const ro = new ResizeObserver(fireResize);
+        ro.observe(containerElement);
+        resizeObserverRef.current = ro;
+
+        let resizeTimeout;
+        resizeHandlerRef.current = () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
             const newScale = getDiceScale();
-            if (diceBoxRef.current && diceBoxRef.current.updateConfig) {
+            if (diceBoxRef.current?.updateConfig) {
               diceBoxRef.current.updateConfig({ scale: newScale });
             }
-          };
-          
-          updateCanvasSize();
-          
-          // Update on resize with debounce for performance
-          let resizeTimeout;
-          resizeHandlerRef.current = () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(updateCanvasSize, 150);
-          };
-          window.addEventListener('resize', resizeHandlerRef.current);
-          // Also listen for orientation changes on mobile
-          window.addEventListener('orientationchange', resizeHandlerRef.current);
-          
-          console.log('Canvas successfully configured for full viewport');
-        } else {
-          console.warn('DiceBox canvas property is null');
-        }
+          }, 150);
+        };
+        window.addEventListener('resize', resizeHandlerRef.current);
+        window.addEventListener('orientationchange', resizeHandlerRef.current);
 
-        // Listen for roll complete
+        // Listen for roll complete — clear 3D dice after DICE_RESULT_DISPLAY_MS
         diceBox.onRollComplete = (results) => {
           setIsRolling(false);
           const total = results.reduce((sum, die) => sum + die.value, 0);
           setLastRoll({ results, total, timestamp: Date.now() });
+
+          cancelScheduledDiceClear();
+          diceClearTimerRef.current = window.setTimeout(() => {
+            diceClearTimerRef.current = null;
+            diceBoxRef.current?.clear?.();
+          }, DICE_RESULT_DISPLAY_MS);
         };
       } catch (error) {
         console.error('Failed to initialize DiceBox:', error);
@@ -142,17 +140,25 @@ export const DiceBoxProvider = ({ children }) => {
 
     return () => {
       clearTimeout(timer);
+      if (diceClearTimerRef.current != null) {
+        clearTimeout(diceClearTimerRef.current);
+        diceClearTimerRef.current = null;
+      }
       if (resizeHandlerRef.current) {
         window.removeEventListener('resize', resizeHandlerRef.current);
         window.removeEventListener('orientationchange', resizeHandlerRef.current);
         resizeHandlerRef.current = null;
+      }
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
       }
       if (diceBoxRef.current) {
         diceBoxRef.current.destroy?.();
         diceBoxRef.current = null;
       }
     };
-  }, [disableThreeJS, diceColor, getDiceScale]);
+  }, [disableThreeJS, diceColor, getDiceScale, cancelScheduledDiceClear]);
 
   // Update dice color when it changes
   useEffect(() => {
@@ -166,16 +172,19 @@ export const DiceBoxProvider = ({ children }) => {
   const rollDice = useCallback((notation) => {
     if (!diceBoxRef.current || isRolling) return;
 
+    cancelScheduledDiceClear();
     setIsRolling(true);
     setLastRoll(null);
 
     try {
+      // Ensure physics boundaries match current viewport before rolling
+      window.dispatchEvent(new Event('resize'));
       diceBoxRef.current.roll(notation);
     } catch (error) {
       console.error('Error rolling dice:', error);
       setIsRolling(false);
     }
-  }, [isRolling]);
+  }, [isRolling, cancelScheduledDiceClear]);
 
   return (
     <DiceBoxContext.Provider value={{
@@ -194,19 +203,7 @@ export const DiceBoxProvider = ({ children }) => {
         <div
           id="dice-container"
           ref={containerRef}
-          style={{ 
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-            opacity: disableThreeJS ? 0 : 1,
-            visibility: disableThreeJS ? 'hidden' : 'visible',
-            zIndex: 9999,
-            backgroundColor: 'transparent',
-            overflow: 'hidden'
-          }}
+          className={`pointer-events-none fixed inset-x-0 top-0 z-[9999] h-[100dvh] w-screen overflow-hidden bg-transparent ${disableThreeJS ? 'opacity-0 invisible' : 'opacity-100 visible'}`}
         />
       </div>
     </DiceBoxContext.Provider>

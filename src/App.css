@@ -4,3 +4,89 @@ body {
   background-color: black;
   color: white;
 }
+
+/* ── Dice canvas — dice-box creates a <canvas> inside #dice-container ── */
+#dice-container > canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── Shared FAB base ─────────────────────────────────────────── */
+.fab-base {
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(9, 9, 11, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: border-color 0.2s, background 0.2s;
+}
+.fab-base:hover {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Compact floating music bar (react-h5-audio-player) */
+.floating-audio-fab__player.rhap_container {
+  background: transparent;
+  box-shadow: none;
+  padding: 0.25rem 0.15rem 0;
+}
+
+/* Stacked layout: progress bar full-width on top, controls centered below */
+.floating-audio-fab__player.rhap_stacked .rhap_main {
+  gap: 0.2rem;
+}
+
+.floating-audio-fab__player.rhap_stacked .rhap_progress-section {
+  width: 100%;
+}
+
+.floating-audio-fab__player.rhap_stacked .rhap_controls-section {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+
+.floating-audio-fab__player .rhap_progress-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.floating-audio-fab__player .rhap_time {
+  color: rgb(161 161 170);
+  font-size: 0.65rem;
+}
+
+.floating-audio-fab__player .rhap_progress-filled {
+  background-color: rgb(245 158 11);
+}
+
+.floating-audio-fab__player .rhap_progress-indicator {
+  background: rgb(253 230 138);
+  width: 10px;
+  height: 10px;
+  top: -3px;
+}
+
+.floating-audio-fab__player .rhap_button-clear {
+  color: rgb(244 244 245);
+  font-size: 1.35rem;
+}
+
+.floating-audio-fab__player .rhap_volume-button {
+  color: rgb(212 212 216);
+}
+
+.floating-audio-fab__player .rhap_volume-bar-area {
+  width: 80px;
+}
+
+.floating-audio-fab__player .rhap_volume-filled {
+  background-color: rgb(245 158 11);
+}

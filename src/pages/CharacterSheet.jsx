@@ -867,22 +867,22 @@ const CharacterSheet = () => {
 
         </form>
 
-        {/* Save FAB Button - Positioned next to dice button */}
+        {/* Save FAB — left of the dice FAB */}
         <motion.button
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
           onClick={handleSubmit}
           disabled={loading}
-          className="fixed bottom-4 right-4 mr-6 md:bottom-8 md:right-24 z-50 w-14 h-14 md:w-16 md:h-16 bg-emerald-800 hover:bg-emerald-600 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full shadow-lg flex items-center justify-center transition-colors"
+          className="fab-base fixed bottom-4 right-[4.75rem] z-50 flex h-13 w-13 items-center justify-center md:bottom-6 md:right-[5.5rem] md:h-14 md:w-14 disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Guardar personaje"
           title={loading ? 'Guardando...' : 'Guardar Personaje'}
         >
           {loading ? (
-            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-emerald-300 border-t-transparent" />
           ) : (
-            <Save className="w-6 h-6 md:w-7 md:h-7 text-white" />
+            <Save className="h-5 w-5 text-emerald-400 md:h-6 md:w-6" />
           )}
         </motion.button>
 
@@ -890,12 +890,12 @@ const CharacterSheet = () => {
         <AnimatePresence>
           {saveSuccess && (
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              className="fixed bottom-20 left-1/2 -translate-x-1/2 md:bottom-24 md:left-auto md:right-24 z-50 bg-emerald-600 text-white montserrat font-bold py-3 px-6 rounded-2xl border-2 border-white shadow-lg"
+              exit={{ opacity: 0, y: 12 }}
+              className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-zinc-950/92 px-5 py-2.5 shadow-2xl backdrop-blur-xl montserrat text-sm font-semibold text-emerald-400"
             >
-              ✓ Personaje guardado exitosamente
+              Personaje guardado
             </motion.div>
           )}
         </AnimatePresence>

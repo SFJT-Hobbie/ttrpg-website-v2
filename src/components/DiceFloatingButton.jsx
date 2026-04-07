@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as M, AnimatePresence } from 'framer-motion';
 import { Icon } from '@mdi/react';
 import {
   mdiDiceD20Outline,
@@ -35,67 +35,63 @@ const DiceFloatingButton = () => {
 
   return (
     <>
-      {/* Floating Button */}
-      <motion.button
+      {/* Dice FAB — bottom-right, consistent across all breakpoints */}
+      <M.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-4 md:bottom-8 md:left-auto md:right-8 md:translate-x-0 z-50 w-14 h-14 md:w-16 md:h-16 bg-red-700 hover:bg-red-600 rounded-full shadow-lg flex items-center justify-center transition-colors"
+        className="fab-base fixed bottom-4 right-4 z-50 flex h-13 w-13 items-center justify-center md:bottom-6 md:right-6 md:h-14 md:w-14"
         aria-label="Roll Dice"
       >
-        <Icon path={mdiDiceD20} size={1.5} className="text-white" />
-      </motion.button>
+        <Icon path={mdiDiceD20} size={1.4} className="text-amber-200" />
+      </M.button>
 
-      {/* Modal Overlay */}
+      {/* Dice picker popover */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
-            <motion.div
+            <M.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             />
 
-            {/* Modal Content */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            <M.div
+              initial={{ opacity: 0, scale: 0.85, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className="fixed bottom-20 left-4 md:bottom-auto md:left-auto md:right-8 md:top-1/2 md:-translate-y-1/2 md:translate-x-0 z-50 bg-gray-900 border border-white rounded-lg p-6 shadow-2xl"
+              exit={{ opacity: 0, scale: 0.85, y: 12 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+              className="fixed bottom-20 right-4 left-4 z-50 max-w-[17rem] ml-auto rounded-2xl border border-white/15 bg-zinc-950/92 p-4 shadow-2xl backdrop-blur-xl md:bottom-auto md:left-auto md:right-6 md:top-1/2 md:-translate-y-1/2 md:p-5"
             >
-              {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-2 right-2 text-white hover:text-gray-300 transition-colors"
+                className="absolute right-3 top-3 text-zinc-400 transition-colors hover:text-white"
                 aria-label="Close"
               >
-                <Icon path={mdiClose} size={1} />
+                <Icon path={mdiClose} size={0.85} />
               </button>
 
-              {/* Title */}
-              <h3 className="cinzel text-white text-xl mb-4 text-center">Select Die</h3>
+              <h3 className="cinzel mb-4 text-center text-base tracking-wide text-amber-200/90">Select Die</h3>
 
-              {/* Dice Grid */}
-              <div className="grid grid-cols-3 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-3 gap-2.5">
                 {diceTypes.map((die) => (
-                  <motion.button
+                  <M.button
                     key={die.id}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.92 }}
                     onClick={() => handleRoll(die.id)}
-                    className="flex flex-col items-center justify-center p-4 bg-gray-800 hover:bg-gray-700 rounded-lg border border-transparent hover:border-white transition-all"
+                    className="flex flex-col items-center justify-center rounded-xl border border-white/10 bg-white/5 p-3 transition-all hover:border-amber-400/40 hover:bg-white/10"
                   >
-                    <Icon path={die.icon} size={2} className="text-white mb-2" />
-                    <span className="montserrat text-white text-sm">{die.label}</span>
-                  </motion.button>
+                    <Icon path={die.icon} size={1.6} className="mb-1 text-zinc-200" />
+                    <span className="montserrat text-[11px] tracking-wide text-zinc-400">{die.label}</span>
+                  </M.button>
                 ))}
               </div>
-            </motion.div>
+            </M.div>
           </>
         )}
       </AnimatePresence>

@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../AuthContext.jsx';
+import SkeletonPage from '../components/SkeletonLoader';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const { updatePassword } = useAuth();
+  const { user, loading, isRecovery, updatePassword } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
+
+  if (loading) {
+    return <SkeletonPage />;
+  }
+
+  // If there's no active recovery session, redirect to login
+  if (!user || !isRecovery) {
+    return <Navigate to="/login" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

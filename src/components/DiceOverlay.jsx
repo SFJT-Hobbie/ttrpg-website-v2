@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { DiceBoxContext } from '../DiceBoxContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { DICE_RESULT_DISPLAY_MS } from '../constants/dice.js';
+import { motion as M, AnimatePresence } from 'framer-motion';
 
 /**
  * Dice overlay component that shows rolling dice and results
@@ -16,7 +17,7 @@ const DiceOverlay = () => {
       setShowResult(true);
       const timer = setTimeout(() => {
         setShowResult(false);
-      }, 3000); // Show result for 3 seconds
+      }, DICE_RESULT_DISPLAY_MS);
       return () => clearTimeout(timer);
     }
   }, [lastRoll, isRolling]);
@@ -26,30 +27,31 @@ const DiceOverlay = () => {
   return (
     <AnimatePresence>
       {(isRolling || showResult) && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 pointer-events-none"
+        <M.div
+          initial={{ opacity: 0, y: 8, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 8, scale: 0.9 }}
+          transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+          className="fixed bottom-20 right-4 z-50 pointer-events-none md:bottom-[5.5rem] md:right-6"
         >
-          <div className="bg-black bg-opacity-80 border border-white rounded-lg p-4 min-w-[200px]">
+          <div className="min-w-[180px] rounded-2xl border border-white/15 bg-zinc-950/92 p-4 shadow-2xl backdrop-blur-xl">
             {isRolling && (
               <div className="text-center">
-                <p className="cinzel text-white text-lg mb-2">Lanzando dados...</p>
-                <div className="animate-spin text-yellow-500 text-2xl">⚄</div>
+                <p className="cinzel text-amber-200/90 text-base mb-2">Lanzando dados...</p>
+                <div className="animate-spin text-amber-400 text-2xl">⚄</div>
               </div>
             )}
             {showResult && lastRoll && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
+              <M.div
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <p className="cinzel text-yellow-500 text-2xl md:text-3xl mb-2">
+                <p className="cinzel text-amber-300 text-2xl md:text-3xl mb-1">
                   {lastRoll.total}
                 </p>
                 {lastRoll.results.length > 1 && (
-                  <p className="montserrat text-white text-sm">
+                  <p className="montserrat text-zinc-400 text-xs">
                     {lastRoll.results.map((r, i) => (
                       <span key={i}>
                         {r.value}
@@ -59,17 +61,15 @@ const DiceOverlay = () => {
                   </p>
                 )}
                 <button
-                  onClick={() => {
-                    setShowResult(false);
-                  }}
-                  className="mt-2 px-3 py-1 bg-slate-700 text-white rounded text-xs montserrat hover:bg-slate-600 pointer-events-auto"
+                  onClick={() => setShowResult(false)}
+                  className="mt-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-300 transition-colors hover:bg-white/10 pointer-events-auto montserrat"
                 >
                   Cerrar
                 </button>
-              </motion.div>
+              </M.div>
             )}
           </div>
-        </motion.div>
+        </M.div>
       )}
     </AnimatePresence>
   );

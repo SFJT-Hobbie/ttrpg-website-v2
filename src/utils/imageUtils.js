@@ -1,51 +1,71 @@
 /**
  * Utility functions for optimizing Supabase Storage images
- * Uses Supabase Storage image transformations API
+ * Uses Supabase Storage image transformations API (render endpoint).
+ * @see https://supabase.com/docs/guides/storage/serving/image-transformations
  */
+
+// Match public object URLs: .../storage/v1/object/public/<bucket>/<path>
+const SUPABASE_OBJECT_PUBLIC_RE =
+  /^(https?:\/\/[^/]+\.supabase\.co)\/storage\/v1\/object\/public\/([^?#]+)/i;
+
+// Match existing render URLs: .../storage/v1/render/image/public/<bucket>/<path>
+const SUPABASE_RENDER_PUBLIC_RE =
+  /^(https?:\/\/[^/]+\.supabase\.co)\/storage\/v1\/render\/image\/public\/([^?#]+)/i;
+
+function parseSupabasePublicImageUrl(imageUrl) {
+  let m = imageUrl.match(SUPABASE_OBJECT_PUBLIC_RE);
+  if (m) return { origin: m[1], bucketAndPath: m[2] };
+  m = imageUrl.match(SUPABASE_RENDER_PUBLIC_RE);
+  if (m) return { origin: m[1], bucketAndPath: m[2] };
+  return null;
+}
 
 /**
  * Get optimized image URL from Supabase Storage
- * @param {string} imageUrl - Original Supabase Storage URL
+ * @param {string} imageUrl - Original Supabase Storage URL (object/public or render/public)
  * @param {Object} options - Transformation options
  * @param {number} options.width - Desired width in pixels
  * @param {number} options.height - Desired height in pixels
  * @param {number} options.quality - Image quality (1-100, default: 80)
- * @param {string} options.format - Output format ('webp', 'avif', 'jpeg', 'png', default: 'webp')
- * @param {boolean} options.resize - Resize mode ('cover', 'contain', 'fill', default: 'cover')
+ * @param {string} options.format - Output format ('webp', 'jpeg', 'png', default: 'webp')
+ * @param {string} options.resize - Resize mode ('cover', 'contain', 'fill', default: 'cover')
  * @returns {string} Optimized image URL
  */
 export const getOptimizedImageUrl = (imageUrl, options = {}) => {
   if (!imageUrl) return '';
-  
-  // If it's not a Supabase Storage URL, return as-is
-  if (!imageUrl.includes('supabase.co/storage/v1/object/public/')) {
+
+  const parsed = parseSupabasePublicImageUrl(imageUrl);
+  if (!parsed) {
     return imageUrl;
   }
+
+  const { origin, bucketAndPath } = parsed;
+  const objectPublicUrl = `${origin}/storage/v1/object/public/${bucketAndPath}`;
+
+  const disableTransform =
+    import.meta.env.VITE_DISABLE_SUPABASE_IMAGE_TRANSFORM === 'true';
 
   const {
     width,
     height,
     quality = 80,
     format = 'webp',
-    resize = 'cover'
+    resize = 'cover',
   } = options;
 
-  // Build transformation query string
   const transformations = [];
-  
   if (width) transformations.push(`width=${width}`);
   if (height) transformations.push(`height=${height}`);
-  if (quality) transformations.push(`quality=${quality}`);
+  if (quality != null) transformations.push(`quality=${quality}`);
   if (format) transformations.push(`format=${format}`);
   if (resize) transformations.push(`resize=${resize}`);
 
-  if (transformations.length === 0) {
-    return imageUrl;
+  if (transformations.length === 0 || disableTransform) {
+    return objectPublicUrl;
   }
 
-  // Add transformations to URL
-  const separator = imageUrl.includes('?') ? '&' : '?';
-  return `${imageUrl}${separator}${transformations.join('&')}`;
+  const query = transformations.join('&');
+  return `${origin}/storage/v1/render/image/public/${bucketAndPath}?${query}`;
 };
 
 /**
@@ -60,7 +80,7 @@ export const getAvatarUrl = (imageUrl, size = 200) => {
     height: size,
     quality: 85,
     format: 'webp',
-    resize: 'cover'
+    resize: 'cover',
   });
 };
 
@@ -77,7 +97,7 @@ export const getThumbnailUrl = (imageUrl, width = 400, height = 300) => {
     height,
     quality: 75,
     format: 'webp',
-    resize: 'cover'
+    resize: 'cover',
   });
 };
 
@@ -94,9 +114,6 @@ export const getMapImageUrl = (imageUrl, width = 1200, height = 800) => {
     height,
     quality: 85,
     format: 'webp',
-    resize: 'contain'
+    resize: 'contain',
   });
 };
-
-
-

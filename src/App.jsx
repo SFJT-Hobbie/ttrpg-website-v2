@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AuthProvider, useAuth } from './AuthContext.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DiceBoxProvider } from './DiceBoxProvider';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as M, AnimatePresence } from 'framer-motion';
 import './App.css';
 
 // Lazy load components - grouped by feature for better chunk organization
@@ -82,18 +82,19 @@ const RoomJournalView = lazy(() => import('./pages/RoomJournalView.jsx'));
 // Components that are always needed
 import DiceFloatingButton from './components/DiceFloatingButton.jsx';
 import DiceOverlay from './components/DiceOverlay.jsx';
+import FloatingAudioPlayer from './components/FloatingAudioPlayer.jsx';
 
 // Loading fallback component
 import SkeletonPage from './components/SkeletonLoader';
 const LoadingFallback = () => (
-  <motion.div
+  <M.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5 }}
   >
     <SkeletonPage />
-  </motion.div>
+  </M.div>
 );
 
 const ProtectedRoute = ({ children }) => {
@@ -127,6 +128,7 @@ function AppContent() {
     <div className="overflow-clip relative min-h-screen">
       {shouldShowDice && (
         <>
+          <FloatingAudioPlayer />
           <DiceFloatingButton />
           <DiceOverlay />
         </>
@@ -138,14 +140,14 @@ function AppContent() {
                 <Route
                   path="/"
                   element={
-                    <motion.div
+                    <M.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.5 }}
                     >
                       <Title />
-                    </motion.div>
+                    </M.div>
                   }
                 />
                 <Route path="/login" element={<Login />} />
@@ -156,14 +158,14 @@ function AppContent() {
                 path="/landing"
                 element={
                   <ProtectedRoute>
-                    <motion.div
+                    <M.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.5 }}
                     >
                       <Landing />
-                    </motion.div>
+                    </M.div>
                   </ProtectedRoute>
                 }
               />
